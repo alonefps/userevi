@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Batalha de monstros
+
+A aplicação é uma batalha de monstros, onde temos diferentes monstros com diferentes estatísticas, como ataque e defesa, por exemplo, e podemos deixá-los lutar entre si.
+
+### Objetivos 🎯
+
+- Implementar as seguintes funcionalidades:
+    - cadastrar um monstro com as seguintes informações
+        - `name` - string
+        - `attack` - int
+        - `defense` - int
+        - `speed` - int
+        - `hp` - int
+        - `image_url` - string
+    - criar uma batalha entre dois monstros
+    - visualizar o resultado da batalha automaticamente, após o fim da batalha
+
+---
+
+### Algoritmo de Batalha 🤖
+
+Para calcular o algoritmo de batalha, leve em conta o fluxo abaixo:
+
+- O monstro com a maior velocidade faz o primeiro ataque; se ambas as velocidades forem iguais, o monstro com o maior ataque vai primeiro.
+- Para calcular o dano (`damage`), subtraia a defesa do ataque (`atack - defense`); a diferença é o dano; se o ataque for igual ou menor que a defesa, o dano é 1.
+- Subtraia o dano do `hp` do monstro que sofreu o ataque (`hp = hp - damage`).
+- Os monstros batalharão em rounds até que um vença; todos os rounds devem ser calculados de uma vez só
+- Quem vence a batalha é o monstro que subtraiu o `hp` do inimigo a zero primeiro
+
+---
+
+### Observações 📝
+
+- A aplicação deve ser construída em React Js (utilizando typescript)
+- NÃO é necessário a construção de um backend
+- NÃO é necessário a criação de testes automatizados
+- É permitido o uso de libs externas
+
+---
