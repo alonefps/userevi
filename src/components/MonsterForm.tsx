@@ -30,20 +30,6 @@ export function MonsterForm({ onSubmit, onCancel }: MonsterFormProps) {
       return;
     }
 
-    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
-    const hasValidExtension = imageExtensions.some((ext) =>
-      url.toLowerCase().includes(ext)
-    );
-
-    if (!hasValidExtension) {
-      setImageValidation({
-        isValid: false,
-        isLoading: false,
-        error: "URL deve ter extensão de imagem (.jpg, .png, .gif, etc)",
-      });
-      return;
-    }
-
     setImageValidation({ isValid: false, isLoading: true, error: "" });
 
     try {
@@ -51,10 +37,20 @@ export function MonsterForm({ onSubmit, onCancel }: MonsterFormProps) {
       img.crossOrigin = "anonymous";
 
       const loadPromise = new Promise((resolve, reject) => {
-        img.onload = () => resolve(true);
+        img.onload = () => {
+          // Verificar se realmente é uma imagem válida (tem dimensões)
+          if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+            resolve(true);
+          } else {
+            reject(new Error("Não é uma imagem válida"));
+          }
+        };
         img.onerror = () =>
           reject(new Error("Não foi possível carregar a imagem"));
-        setTimeout(() => reject(new Error("Timeout ao carregar imagem")), 5000);
+        setTimeout(
+          () => reject(new Error("Timeout ao carregar imagem")),
+          10000
+        );
       });
 
       img.src = url;
