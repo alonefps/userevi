@@ -1,5 +1,9 @@
 # Monster Battle Arena 🏟️⚔️
 
+<div align="center">
+  <img src="./pubic/logo.png" alt="Monster Battle Arena Logo" width="300" />
+</div>
+
 Uma aplicação épica de batalha de monstros com interface arcade moderna desenvolvida em React/Next.js e TypeScript.
 
 ![Monster Battle Arena](https://img.shields.io/badge/Status-Completo-brightgreen)
