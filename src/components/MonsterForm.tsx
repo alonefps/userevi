@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Monster } from "@/types/monster";
 
 interface MonsterFormProps {
@@ -18,71 +18,9 @@ export function MonsterForm({ onSubmit, onCancel }: MonsterFormProps) {
     imageUrl: "",
   });
 
-  const [imageValidation, setImageValidation] = useState({
-    isValid: false,
-    isLoading: false,
-    error: "",
-  });
-
-  const validateImageUrl = async (url: string) => {
-    if (!url.trim()) {
-      setImageValidation({ isValid: false, isLoading: false, error: "" });
-      return;
-    }
-
-    setImageValidation({ isValid: false, isLoading: true, error: "" });
-
-    try {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-
-      const loadPromise = new Promise((resolve, reject) => {
-        img.onload = () => {
-          // Verificar se realmente é uma imagem válida (tem dimensões)
-          if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-            resolve(true);
-          } else {
-            reject(new Error("Não é uma imagem válida"));
-          }
-        };
-        img.onerror = () =>
-          reject(new Error("Não foi possível carregar a imagem"));
-        setTimeout(
-          () => reject(new Error("Timeout ao carregar imagem")),
-          10000
-        );
-      });
-
-      img.src = url;
-      await loadPromise;
-
-      setImageValidation({ isValid: true, isLoading: false, error: "" });
-    } catch {
-      setImageValidation({
-        isValid: false,
-        isLoading: false,
-        error: "URL não é uma imagem válida ou não está acessível",
-      });
-    }
-  };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (formData.imageUrl) {
-        validateImageUrl(formData.imageUrl);
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [formData.imageUrl]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      formData.name.trim() &&
-      formData.imageUrl.trim() &&
-      imageValidation.isValid
-    ) {
+    if (formData.name.trim() && formData.imageUrl.trim()) {
       onSubmit(formData);
       setFormData({
         name: "",
@@ -92,7 +30,6 @@ export function MonsterForm({ onSubmit, onCancel }: MonsterFormProps) {
         hp: 250,
         imageUrl: "",
       });
-      setImageValidation({ isValid: false, isLoading: false, error: "" });
     }
   };
 
@@ -100,16 +37,7 @@ export function MonsterForm({ onSubmit, onCancel }: MonsterFormProps) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const getImageInputBorderColor = () => {
-    if (!formData.imageUrl) return "border-slate-600";
-    if (imageValidation.isLoading) return "border-yellow-400";
-    if (imageValidation.isValid) return "border-green-400";
-    if (imageValidation.error) return "border-red-400";
-    return "border-slate-600";
-  };
-
-  const isFormValid =
-    formData.name.trim() && formData.imageUrl.trim() && imageValidation.isValid;
+  const isFormValid = formData.name.trim() && formData.imageUrl.trim();
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50 slide-in-up">
@@ -138,41 +66,14 @@ export function MonsterForm({ onSubmit, onCancel }: MonsterFormProps) {
               <label className="block text-sm font-bold mb-3 text-slate-300">
                 URL da Imagem
               </label>
-              <div className="relative">
-                <input
-                  type="url"
-                  value={formData.imageUrl}
-                  onChange={(e) =>
-                    handleInputChange("imageUrl", e.target.value)
-                  }
-                  className={`w-full px-4 py-3 glass-card rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none text-white placeholder-slate-400 transition-all border-2 ${getImageInputBorderColor()}`}
-                  placeholder="https://exemplo.com/avatar.jpg"
-                  required
-                />
-                {imageValidation.isLoading && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <div className="animate-spin w-5 h-5 border-2 border-yellow-400 border-t-transparent rounded-full"></div>
-                  </div>
-                )}
-                {imageValidation.isValid && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400">
-                    ✓
-                  </div>
-                )}
-                {imageValidation.error && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400">
-                    ✗
-                  </div>
-                )}
-              </div>
-              {imageValidation.error && (
-                <p className="text-red-400 text-xs mt-2">
-                  {imageValidation.error}
-                </p>
-              )}
-              {imageValidation.isValid && (
-                <p className="text-green-400 text-xs mt-2">✓ Imagem válida</p>
-              )}
+              <input
+                type="url"
+                value={formData.imageUrl}
+                onChange={(e) => handleInputChange("imageUrl", e.target.value)}
+                className="w-full px-4 py-3 glass-card rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none text-white placeholder-slate-400 transition-all"
+                placeholder="https://exemplo.com/avatar.jpg"
+                required
+              />
             </div>
           </div>
 
